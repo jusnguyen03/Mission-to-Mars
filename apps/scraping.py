@@ -19,6 +19,10 @@ def scrape_all():
     "news_paragraph": news_paragraph,
     "featured_image": featured_image(browser),
     "facts": mars_facts(),
+    "cerberus": cerberus(browser),
+    "schiaparelli": schiaparelli(browser),
+    "syrtis": syrtis(browser),
+    "valles": valles(browser),
     "last_modified": dt.datetime.now()
     }
     return data
@@ -90,6 +94,96 @@ def mars_facts():
     df.set_index('description', inplace=True)
     # Convert dataframe into HTML format, add bootstrap
     return(df.to_html())
+
+# Challenge
+# Fuction for Cerberus Hemisphere
+def cerberus(browser):
+    try:
+        url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+        browser.visit(url)
+        cerb_image = browser.find_by_text('Cerberus Hemisphere Enhanced', wait_time=1)
+        cerb_image.click()
+        html = browser.html
+        imagesoup = BeautifulSoup(html, 'html.parser')
+        cerbsoup = BeautifulSoup(html, 'html.parser')
+        # Find the title
+        cerberus_title = cerbsoup.find("h2", class_='title').get_text()
+        cerberusSam = browser.links.find_by_partial_text('Sample')
+        cerberusSam.click()
+        # Find the relative image url
+        cerb_url_rel = imagesoup.select_one('img.wide-image').get('src')
+        # Use the base URL to create an absolute URL
+        cerb_img_url = f'https://astrogeology.usgs.gov{cerb_url_rel}'
+        return(cerb_img_url, cerberus_title)
+    except AttributeError:
+        return None, None
+# Fuction for Schiaparelli Hemisphere
+def schiaparelli(browser):
+    try:
+        # Visit schiaparelli URL
+        url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+        browser.visit(url)
+        schiap_image = browser.find_by_text('Schiaparelli Hemisphere Enhanced')
+        schiap_image.click()
+        # Parse the resulting html with soup
+        html = browser.html
+        imagesoup = BeautifulSoup(html, 'html.parser')
+        schiapsoup = BeautifulSoup(html, 'html.parser')
+        # Find the title
+        schiap_title = schiapsoup.find("h2", class_='title').get_text()
+        schiaparelli = browser.links.find_by_partial_text('Sample')
+        schiaparelli.click()
+        # Find the relative image url
+        schiap_url_rel = imagesoup.select_one('img.wide-image').get('src')
+        schiap_img_url = f'https://astrogeology.usgs.gov{schiap_url_rel}'
+        return(schiap_img_url, schiap_title)
+    except AttributeError:
+        return None, None
+# Fuction for Syrtis Major Hemisphere
+def syrtis(browser):
+    try:
+        # Visit Syrtis major URL
+        url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+        browser.visit(url)
+        # Find and click the Schiaparelli image button
+        syrtis_image = browser.find_by_text('Syrtis Major Hemisphere Enhanced')
+        syrtis_image.click()
+        # Parse the resulting html with soup
+        html = browser.html
+        image_soup = BeautifulSoup(html, 'html.parser')
+        syrtissoup = BeautifulSoup(html, 'html.parser')
+        # Find the title
+        syrtis_title = syrtissoup.find("h2", class_='title').get_text()
+        syrtis = browser.links.find_by_partial_text('Sample')
+        syrtis.click()
+        # Find the relative image url
+        syrtis_url_rel = image_soup.select_one('img.wide-image').get('src')
+        syrtis_img_url = f'https://astrogeology.usgs.gov{syrtis_url_rel}'
+        return(syrtis_img_url, syrtis_title)
+    except AttributeError:
+        return None, None
+def valles(browser):
+    try:
+        # Visit Valles Marineris URL
+        url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+        browser.visit(url)
+        # Find and click the Schiaparelli image button
+        valles_image = browser.find_by_text('Valles Marineris Hemisphere Enhanced')
+        valles_image.click()
+        # Parse the resulting html with soup
+        html = browser.html
+        image_soup = BeautifulSoup(html, 'html.parser')
+        vallessoup = BeautifulSoup(html, 'html.parser')
+        # Find title
+        valles_title = vallessoup.find("h2", class_='title').get_text()
+        valles = browser.links.find_by_partial_text('Sample')
+        valles.click()
+        # Find the relative image url
+        valles_url_rel = image_soup.select_one('img.wide-image').get('src')
+        valles_img_url = f'https://astrogeology.usgs.gov{valles_url_rel}'
+        return(valles_img_url, valles_title)
+    except AttributeError:
+        return None, None
 
 if __name__ == "__main__":
     # If running as script, print scraped data
